@@ -5,3 +5,13 @@ export function getHomeMultidata() {
   })
 
 }
+// 发送网络请求，获取首页相关的商品数据
+export function getHomeGoods(type,page) {
+  return request({
+    url:'/home/data',
+    params:{
+      type,
+      page
+    }
+  })
+}
