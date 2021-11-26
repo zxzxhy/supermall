@@ -1,19 +1,42 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
 
+import { createRouter, createWebHistory } from 'vue-router'
+
+const Home = () => import('../views/home/Home')
+const Category = () => import('../views/category/Category')
+const Cart = () => import('../views/cart/Car')
+const Profile = () => import('../views/profile/Profile')
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    redirect: '/home'
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/home',
+    component: Home,
+    meta: {
+      title: '首页'
+    }
+  },
+  {
+    path: '/category',
+    component: Category,
+    meta: {
+      title: '分类'
+    }
+  },
+  {
+    path: '/cart',
+    component: Cart,
+    meta: {
+      title: '购物车'
+    }
+  },
+  {
+    path: '/profile',
+    component: Profile,
+    meta: {
+      title: '我的'
+    }
   }
 ]
 
@@ -23,3 +46,7 @@ const router = createRouter({
 })
 
 export default router
+router.beforeEach((to, from, next) => {
+  document.title = to.matched[0].meta.title
+  next()
+})
