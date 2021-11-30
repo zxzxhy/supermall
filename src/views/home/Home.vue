@@ -5,22 +5,33 @@
         <div>购物街</div>
       </template>
     </nav-bar>
-    <home-swiper :banners="banners" />
-    <recommend-view :recommends="recommends" />
-    <feature-view />
-    <tab-control :titles="titles" class="tab-control" @tabClick="tabClick" />
-    <goods-list :goods="showGoods" />
+    <!-- 
+      ref / children 可以准确获取元素 
+        - 如果是绑定在组件中的可以通过  this.$refs.refname 获取到组件对象
+        - 如果是绑定在普通的元素中   this.$refs.refname 获取到的就是元素对象  
+     -->
+    <scroll class="content" ref="scroll">
+      <home-swiper :banners="banners" />
+      <recommend-view :recommends="recommends" />
+      <feature-view />
+      <tab-control :titles="titles" class="tab-control" @tabClick="tabClick" />
+      <goods-list :goods="showGoods" />
+    </scroll>
+    <!-- 像监听组件的话必许加上 native 他是监听组件根元素的原生事件 vue3不加也行 -->
+    <back-top @click="backClick" />
   </div>
 </template>
 
 <script>
 import NavBar from "components/common/navbar/NavBar";
-import TabControl from "components/content/tabControl/TabControl.vue";
+import TabControl from "components/content/tabControl/TabControl";
+import Scroll from "components/common/scroll/Scroll";
 
 import HomeSwiper from "./childComps/HomeSwiper";
-import RecommendView from "./childComps/RecommendView.vue";
-import FeatureView from "./childComps/FeatureView.vue";
-import GoodsList from "components/content/goods/GoodsList.vue";
+import RecommendView from "./childComps/RecommendView";
+import FeatureView from "./childComps/FeatureView";
+import GoodsList from "components/content/goods/GoodsList";
+import BackTop from 'components/content/backTop/BackTop'
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 
@@ -28,10 +39,12 @@ export default {
   components: {
     NavBar,
     TabControl,
+    Scroll,
     HomeSwiper,
     GoodsList,
     RecommendView,
     FeatureView,
+    BackTop
   },
   data() {
     return {
@@ -44,7 +57,7 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
-      currentType:'pop'
+      currentType: "pop",
     };
   },
   // 在组件创建完之后执行这个声明周期函数
@@ -58,28 +71,28 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  computed:{
+  computed: {
     // 展示那个类型的商品
-    showGoods () {
-      return this.goods[this.currentType].list
-    }
+    showGoods() {
+      return this.goods[this.currentType].list;
+    },
   },
   methods: {
     /* 
       事件监听相关方法
     */
-    tabClick (index) {
+    tabClick(index) {
       // console.log(index);
       switch (index) {
         case 0:
-          this.currentType = 'pop'
-          break
-          case 1:
-          this.currentType = 'new'
-          break
-          case 2:
-          this.currentType = 'sell'
-          break
+          this.currentType = "pop";
+          break;
+        case 1:
+          this.currentType = "new";
+          break;
+        case 2:
+          this.currentType = "sell";
+          break;
       }
     },
     /* 
@@ -96,19 +109,27 @@ export default {
     getHomeGoods(type) {
       const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then((res) => {
-
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
       });
+    },
+    // 回到顶部组件的点击
+    backClick () {
+      // this.$refs.scroll 拿到的是 scroll 组件对象 第三个参数是用多少时间回到顶部  scrollTo 这个是 better-scroll 的方法
+      // this.$refs.scroll.scroll.scrollTo(0,0,1000)
+      
+      // 因为 scrollTo方法已经在 BackScroll封装好了 所以可以直接调用
+      this.$refs.scroll.scrollTo(0,0,1000)
     }
-
   },
 };
 </script>
 
-<style>
+<style scoped>
 #home {
+  position: relative;
   padding-top: 44px;
+  height: 100vh;
 }
 .home-nav {
   position: fixed;
@@ -123,6 +144,20 @@ export default {
 .tab-control {
   position: sticky;
   top: 44px;
-  z-index: 999;
+  z-index: 9;
 }
+.content {
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+/* .content {
+  height: calc(100% - 49px);
+  margin-top: 44px;
+  overflow: hidden;
+} */
 </style>

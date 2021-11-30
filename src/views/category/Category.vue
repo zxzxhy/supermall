@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <ul class="content">
+      <button @click="btnClick">按钮</button>
       <li>分类列表1</li>
       <li>分类列表2</li>
       <li>分类列表3</li>
@@ -58,9 +59,35 @@
 <script>
 import BScroll from "better-scroll";
 export default {
-  mounted() {
-    new BScroll(".wrapper", {});
+  data () {
+    return {
+      scroll:null
+    }
   },
+  // 生命周期函数:实例被挂载后调用
+  mounted() {
+    this.scroll = new BScroll(".wrapper", {
+      // 设置可以监听滚动
+      probeType: 3,
+      // 设置允许上拉加载更多
+      pullUpLoad:true,
+      // 设置允许事件被监听 现在不加也可以
+      // click:true
+    });
+    this.scroll.on('scroll',position => {
+      // console.log(position);
+    }),
+    this.scroll.on('pullingUp',() => {
+      console.log('上拉加载更多');
+      // 提供下次下拉加载更多的机会
+      this.scroll.finishPullUp()
+    })
+  },
+  methods:{
+    // btnClick() {
+    //   console.log('btn被点击了');
+    // }
+  }
 };
 </script>
 
