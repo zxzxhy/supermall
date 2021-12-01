@@ -10,7 +10,7 @@
         - 如果是绑定在组件中的可以通过  this.$refs.refname 获取到组件对象
         - 如果是绑定在普通的元素中   this.$refs.refname 获取到的就是元素对象  
      -->
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type='3' @scroll="contentScroll">
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view />
@@ -18,7 +18,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
     <!-- 像监听组件的话必许加上 native 他是监听组件根元素的原生事件 vue3不加也行 -->
-    <back-top @click="backClick" />
+    <back-top @click="backClick" v-show="isShowBackTop" />
   </div>
 </template>
 
@@ -58,6 +58,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
+      isShowBackTop:false
     };
   },
   // 在组件创建完之后执行这个声明周期函数
@@ -95,6 +96,9 @@ export default {
           break;
       }
     },
+    contentScroll (posstion) {
+      -posstion.y > 1000 ? this.isShowBackTop = true : this.isShowBackTop = false
+    },
     /* 
       网络请求相关方法
     */
@@ -128,7 +132,6 @@ export default {
 <style scoped>
 #home {
   position: relative;
-  padding-top: 44px;
   height: 100vh;
 }
 .home-nav {
@@ -149,7 +152,7 @@ export default {
 .content {
   position: absolute;
   top: 44px;
-  bottom: 49px;
+  bottom: 10px;
   left: 0;
   right: 0;
   overflow: hidden;
