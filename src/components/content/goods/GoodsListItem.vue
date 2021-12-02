@@ -1,5 +1,7 @@
 <template>
   <div class="goods-item">
+    <!-- 事件总线方法解决 滚区域的bug -->
+    <!-- <img :src="goodsItem.show.img" alt="" @load="imageLoad" /> -->
     <img :src="goodsItem.show.img" alt="" />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
@@ -11,6 +13,12 @@
 
 <script>
 export default {
+  methods:{
+    // 事件总线使用 实现
+    // imageLoad() {
+    //   this.$bus.$emit('itemImageLoad')
+    // }
+  },
   props: {
     goodsItem: {
       type: Object,

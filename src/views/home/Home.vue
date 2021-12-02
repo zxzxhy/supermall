@@ -10,7 +10,7 @@
         - 如果是绑定在组件中的可以通过  this.$refs.refname 获取到组件对象
         - 如果是绑定在普通的元素中   this.$refs.refname 获取到的就是元素对象  
      -->
-    <scroll class="content" ref="scroll" :probe-type='3' @scroll="contentScroll">
+    <scroll class="content" ref="scroll" :probe-type='3' @scroll="contentScroll" :pull-up-load='true' @pullingUp='loadMore'>
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view />
@@ -72,6 +72,13 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
+    // mounted() {
+    // const refresh = this.deounce(this.$refs.refresh,500)
+    // this.$bus.$on('itemImageLoad',()=>{
+    // this.$refs.scroll.refresh()
+    // refresh()
+    // })
+  // },
   computed: {
     // 展示那个类型的商品
     showGoods() {
@@ -81,7 +88,18 @@ export default {
   methods: {
     /* 
       事件监听相关方法
-    */
+    */ 
+       //  创建防抖函数
+    // deounce(fun,delay){
+    //   let timer = null
+    //   return function (...args){
+    //     if(timer) clearTimeout(timer)
+    //     timer = setTimeout(()=>{
+    //       fun.apply(this,args)
+    //     },delay)
+    //   }
+    // },
+
     tabClick(index) {
       // console.log(index);
       switch (index) {
@@ -99,6 +117,13 @@ export default {
     contentScroll (posstion) {
       -posstion.y > 1000 ? this.isShowBackTop = true : this.isShowBackTop = false
     },
+    // 上拉加载更多
+    loadMore () {
+      // console.log('上拉加载更多');
+      this.getHomeGoods(this.currentType)
+      // 除了在 Scroll 组件 scroll里面添加 observeImage:true 之外可以在这例设置 当图片加载完之后刷新一下就可以正常滑动了
+      // this.$refs.scroll.refresh()
+    },
     /* 
       网络请求相关方法
     */
@@ -115,6 +140,7 @@ export default {
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+         this.$refs.scroll.finishPullUp()
       });
     },
     // 回到顶部组件的点击
