@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item">
+  <div class="goods-item" @click="itemClick">
     <!-- 事件总线方法解决 滚区域的bug -->
     <!-- <img :src="goodsItem.show.img" alt="" @load="imageLoad" /> -->
     <img :src="goodsItem.show.img" alt="" />
@@ -17,7 +17,10 @@ export default {
     // 事件总线使用 实现
     // imageLoad() {
     //   this.$bus.$emit('itemImageLoad')
-    // }
+    // },
+    itemClick () {
+      this.$router.push('/detail/' + this.goodsItem.iid)
+    }
   },
   props: {
     goodsItem: {

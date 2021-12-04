@@ -1,10 +1,14 @@
-
-import { createRouter, createWebHistory } from 'vue-router'
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
 const Home = () => import('../views/home/Home')
 const Category = () => import('../views/category/Category')
 const Cart = () => import('../views/cart/Car')
 const Profile = () => import('../views/profile/Profile')
+const Detail = () => import('../views/detail/Detail')
+
+Vue.use(VueRouter)
+
 const routes = [
   {
     path: '/',
@@ -36,12 +40,19 @@ const routes = [
     component: Profile,
     meta: {
       title: '我的'
-    }
+    },
+  },
+  {
+    path: '/detail/:id',
+    component: Detail,
+    meta: {
+      title: '详情页'
+    },
   }
 ]
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+const router = new VueRouter({
+  mode: 'history',
   routes
 })
 

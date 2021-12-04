@@ -33,7 +33,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
     <!-- 像监听组件的话必许加上 native 他是监听组件根元素的原生事件 vue3不加也行 -->
-    <back-top @click="backClick" v-show="isShowBackTop" />
+    <back-top @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
 
@@ -77,6 +77,7 @@ export default {
       isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
+      saveY: 0,
     };
   },
   // 在组件创建完之后执行这个声明周期函数
@@ -104,13 +105,16 @@ export default {
       return this.goods[this.currentType].list;
     },
   },
+
+  /* 为了能保存 跳转前页面的状态 使用了 activated  deactivated 配合 keep-alive  但是现在better-scroll 修复了用不着了*/
   // 处于活跃状态
   activated() {
-    console.log("---");
+    this.$refs.scroll.refresh();
+    this.$refs.scroll.scrollTo(0, this.scrollY, 1);
   },
   // 不处于活跃状态
   deactivated() {
-    console.log("+++++");
+    this.saveY = this.$refs.scroll.getScrollY();
   },
   methods: {
     /* 
