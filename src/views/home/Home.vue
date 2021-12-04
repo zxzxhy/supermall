@@ -103,14 +103,6 @@ export default {
     showGoods() {
       return this.goods[this.currentType].list;
     },
-    // 处于活跃状态
-    activated() {
-      console.log("---");
-    },
-    // 不处于活跃状态
-    deactivated() {
-      console.log("+++++");
-    },
   },
   // 处于活跃状态
   activated() {
