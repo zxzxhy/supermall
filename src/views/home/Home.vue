@@ -5,16 +5,31 @@
         <div>购物街</div>
       </template>
     </nav-bar>
+    <tab-control
+      :titles="titles"
+      @tabClick="tabClick"
+      ref="tabControl1"
+      class="tab-control"
+      v-show="isTabFixed"
+    />
     <!-- 
       ref / children 可以准确获取元素 
         - 如果是绑定在组件中的可以通过  this.$refs.refname 获取到组件对象
-        - 如果是绑定在普通的元素中   this.$refs.refname 获取到的就是元素对象  
+        - 如果是绑定在普通的元素中   this.$refs.refname 获取到的就是元素对象 
+        - 所有的组件都有一个 $el 这个元素是用于获取组件中的元素的 
      -->
-    <scroll class="content" ref="scroll" :probe-type='3' @scroll="contentScroll" :pull-up-load='true' @pullingUp='loadMore'>
-      <home-swiper :banners="banners" />
+    <scroll
+      class="content"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="contentScroll"
+      :pull-up-load="true"
+      @pullingUp="loadMore"
+    >
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
       <recommend-view :recommends="recommends" />
       <feature-view />
-      <tab-control :titles="titles" class="tab-control" @tabClick="tabClick" />
+      <tab-control :titles="titles" @tabClick="tabClick" ref="tabControl2" />
       <goods-list :goods="showGoods" />
     </scroll>
     <!-- 像监听组件的话必许加上 native 他是监听组件根元素的原生事件 vue3不加也行 -->
@@ -31,9 +46,10 @@ import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 import GoodsList from "components/content/goods/GoodsList";
-import BackTop from 'components/content/backTop/BackTop'
+import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
+import { deounce } from "common/utils";
 
 export default {
   components: {
@@ -44,7 +60,7 @@ export default {
     GoodsList,
     RecommendView,
     FeatureView,
-    BackTop
+    BackTop,
   },
   data() {
     return {
@@ -58,7 +74,9 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop:false
+      isShowBackTop: false,
+      tabOffsetTop: 0,
+      isTabFixed: false,
     };
   },
   // 在组件创建完之后执行这个声明周期函数
@@ -72,34 +90,40 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-    // mounted() {
+  mounted() {
+    // 使用防抖动函数 图片加载完成得事件监听
     // const refresh = this.deounce(this.$refs.refresh,500)
     // this.$bus.$on('itemImageLoad',()=>{
     // this.$refs.scroll.refresh()
     // refresh()
     // })
-  // },
+  },
   computed: {
     // 展示那个类型的商品
     showGoods() {
       return this.goods[this.currentType].list;
     },
+    // 处于活跃状态
+    activated() {
+      console.log("---");
+    },
+    // 不处于活跃状态
+    deactivated() {
+      console.log("+++++");
+    },
+  },
+  // 处于活跃状态
+  activated() {
+    console.log("---");
+  },
+  // 不处于活跃状态
+  deactivated() {
+    console.log("+++++");
   },
   methods: {
     /* 
       事件监听相关方法
-    */ 
-       //  创建防抖函数
-    // deounce(fun,delay){
-    //   let timer = null
-    //   return function (...args){
-    //     if(timer) clearTimeout(timer)
-    //     timer = setTimeout(()=>{
-    //       fun.apply(this,args)
-    //     },delay)
-    //   }
-    // },
-
+    */
     tabClick(index) {
       // console.log(index);
       switch (index) {
@@ -113,16 +137,29 @@ export default {
           this.currentType = "sell";
           break;
       }
+      // 让两个 tabControl 的状态保持一致
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
-    contentScroll (posstion) {
-      -posstion.y > 1000 ? this.isShowBackTop = true : this.isShowBackTop = false
+    contentScroll(position) {
+      // 决定 BackTop 是否显示
+      this.isShowBackTop = -position.y > 1000;
+
+      // 决定 tabControl 是否吸顶
+      this.isTabFixed = -position.y > this.tabOffsetTop;
     },
     // 上拉加载更多
-    loadMore () {
+    loadMore() {
       // console.log('上拉加载更多');
-      this.getHomeGoods(this.currentType)
+      this.getHomeGoods(this.currentType);
       // 除了在 Scroll 组件 scroll里面添加 observeImage:true 之外可以在这例设置 当图片加载完之后刷新一下就可以正常滑动了
       // this.$refs.scroll.refresh()
+    },
+    swiperImageLoad() {
+      // 获取 tabControl 的 offsetTop
+      // this.$refs.tabControl 这个拿到的是一个组件，我们需要的是组件里面的元素
+      // 所有的组件都有一个 $el 这个元素是用于获取组件中的元素的
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
     /* 
       网络请求相关方法
@@ -140,17 +177,17 @@ export default {
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
-         this.$refs.scroll.finishPullUp()
+        this.$refs.scroll.finishPullUp();
       });
     },
     // 回到顶部组件的点击
-    backClick () {
+    backClick() {
       // this.$refs.scroll 拿到的是 scroll 组件对象 第三个参数是用多少时间回到顶部  scrollTo 这个是 better-scroll 的方法
       // this.$refs.scroll.scroll.scrollTo(0,0,1000)
-      
+
       // 因为 scrollTo方法已经在 BackScroll封装好了 所以可以直接调用
-      this.$refs.scroll.scrollTo(0,0,1000)
-    }
+      this.$refs.scroll.scrollTo(0, 0, 1000);
+    },
   },
 };
 </script>
@@ -161,19 +198,15 @@ export default {
   height: 100vh;
 }
 .home-nav {
-  position: fixed;
+  /* 在使用浏览器原生滚动时，为了让导航不跟随一起滚动 而使用的 */
+  /* position: fixed;
   left: 0;
   top: 0;
-  right: 0;
+  right: 0; */
   z-index: 1000;
   color: #fff;
   font-weight: bolder;
   background-color: var(--color-tint);
-}
-.tab-control {
-  position: sticky;
-  top: 44px;
-  z-index: 9;
 }
 .content {
   position: absolute;
@@ -189,4 +222,8 @@ export default {
   margin-top: 44px;
   overflow: hidden;
 } */
+.tab-control {
+  position: relative;
+  z-index: 9;
+}
 </style>
