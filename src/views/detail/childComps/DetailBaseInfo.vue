@@ -55,7 +55,7 @@ export default {
   top: -8px;
   margin-left: 5px;
   padding: 2px 5px;
-  font-size: 13px;
+  font-size: 12px;
   background-color: var(--color-high-text);
   color: #fff;
   border-radius: 8px;
@@ -78,6 +78,7 @@ export default {
   font-size: 13px;
 }
 .info-servies img {
+  vertical-align: text-bottom;
   width: 14px;
 }
 </style>
