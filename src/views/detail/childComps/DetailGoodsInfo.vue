@@ -30,6 +30,7 @@ export default {
 <style>
 .detailInfo {
   padding: 20px;
+  border-bottom: 5px solid #f2f5f8;
 }
 .start {
   position: relative;
