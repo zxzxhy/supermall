@@ -106,16 +106,16 @@ export default {
     },
   },
 
-  /* 为了能保存 跳转前页面的状态 使用了 activated  deactivated 配合 keep-alive  但是现在better-scroll 修复了用不着了*/
+  /* 为了能保存 跳转前页面的状态 使用了 activated  deactivated 配合 keep-alive  但是现在better-scroll */
   // 处于活跃状态
-  // activated() {
-  //   this.$refs.scroll.refresh();
-  //   this.$refs.scroll.scrollTo(0, this.scrollY, 1);
-  // },
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.saveY, 1);
+    this.$refs.scroll.refresh();
+  },
   // 不处于活跃状态
-  // deactivated() {
-  //   this.saveY = this.$refs.scroll.getScrollY();
-  // },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY();
+  },
   methods: {
     /* 
       事件监听相关方法

@@ -1,8 +1,9 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" />
+    <detail-nav-bar class="detail-nav" @titleClick='titleClick' />
     <scroll class="content">
-      <detail-swiper :topImages="topImages" />
+      <!-- 在标签里面不区分大小写 写topImages 和 topimages 是一样的 所以由驼峰的花最好是以 top-images 这种方式写 -->
+      <detail-swiper :top-images="topImages" />
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
       <detail-goods-info :detail-info="detailInfo" />
@@ -60,6 +61,11 @@ export default {
       commentInfo: {},
       recommends:[]
     };
+  },
+  methods:{
+    titleClick(index) {
+      console.log(index);
+    }
   },
   created() {
     // 1.$route 当前路由信息对象 保存 我们传入的 iid
