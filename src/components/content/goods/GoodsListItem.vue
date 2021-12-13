@@ -1,8 +1,8 @@
 <template>
   <div class="goods-item" @click="itemClick">
     <!-- 事件总线方法解决 滚区域的bug -->
-    <!-- <img :src="goodsItem.show.img" alt="" @load="imageLoad" /> -->
-    <img :src="showImage" alt="" />
+    <img :src="showImage" alt="" @load="imageLoad" />
+    <!-- <img :src="showImage" alt="" /> -->
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">￥{{ goodsItem.price }}</span>
@@ -20,9 +20,9 @@ export default {
   },
   methods:{
     // 事件总线使用 实现
-    // imageLoad() {
-    //   this.$bus.$emit('itemImageLoad')
-    // },
+    imageLoad() {
+      this.$bus.$emit('itemImageLoad')
+    },
     itemClick () {
       this.$router.push('/detail/' + this.goodsItem.iid)
     }

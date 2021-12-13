@@ -49,7 +49,7 @@ import GoodsList from "components/content/goods/GoodsList";
 import BackTop from "components/content/backTop/BackTop";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-import { deounce } from "common/utils";
+import {debounce} from "common/utils"
 
 export default {
   components: {
@@ -78,6 +78,7 @@ export default {
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
+      itemImgListener:null
     };
   },
   // 在组件创建完之后执行这个声明周期函数
@@ -93,11 +94,12 @@ export default {
   },
   mounted() {
     // 使用防抖动函数 图片加载完成得事件监听
-    // const refresh = this.deounce(this.$refs.refresh,500)
-    // this.$bus.$on('itemImageLoad',()=>{
-    // this.$refs.scroll.refresh()
-    // refresh()
-    // })
+    const refresh = debounce(this.$refs.scroll.refresh, 200);
+    this.itemImgListener = () => {
+      // this.$refs.scroll.refresh()
+      refresh();
+    }
+    this.$bus.$on("itemImageLoad", this.itemImgListener);
   },
   computed: {
     // 展示那个类型的商品
@@ -114,7 +116,11 @@ export default {
   },
   // 不处于活跃状态
   deactivated() {
+    // 保存y值
     this.saveY = this.$refs.scroll.getScrollY();
+
+    // 取消全局事件监听  这里指取消 this.itemImgListener 这个函数的 itemImgload 监听
+    this.$bus.$off('itemImgload',this.itemImgListener)
   },
   methods: {
     /* 
@@ -136,11 +142,11 @@ export default {
       // 让两个 tabControl 的状态保持一致
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
+      this.$refs.scroll.scrollTo(0,-this.$refs.tabControl2.$el.offsetTop,1)
     },
     contentScroll(position) {
       // 决定 BackTop 是否显示
       this.isShowBackTop = -position.y > 1000;
-
       // 决定 tabControl 是否吸顶
       this.isTabFixed = -position.y > this.tabOffsetTop;
     },

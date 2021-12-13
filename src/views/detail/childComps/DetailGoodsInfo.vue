@@ -9,7 +9,7 @@
     </div>
     <div>{{ detailInfo.detailImage[0].key }}</div>
     <div class="info-list">
-      <img v-for="(item,index) in detailInfo.detailImage[0].list"  :key="index" :src="item" alt="">
+      <img v-for="(item,index) in detailInfo.detailImage[0].list"  :key="index" :src="item" alt="" @load="ImageLoad">
     </div>
   </div>
 </template>
@@ -24,6 +24,12 @@ export default {
       },
     },
   },
+  methods:{
+    // 要是由滑动卡住的情况就是图片加载的时候 better-scroll 没有将图片的高度计算进去 因为图片没有加载完成
+    ImageLoad () {
+      this.$emit('detailImageLoad')
+    }
+  }
 };
 </script>
 

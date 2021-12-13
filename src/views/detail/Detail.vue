@@ -1,16 +1,19 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" @titleClick='titleClick' />
-    <scroll class="content">
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick" />
+    <scroll class="content" ref="scroll">
       <!-- 在标签里面不区分大小写 写topImages 和 topimages 是一样的 所以由驼峰的花最好是以 top-images 这种方式写 -->
       <detail-swiper :top-images="topImages" />
       <detail-base-info :goods="goods" />
       <detail-shop-info :shop="shop" />
-      <detail-goods-info :detail-info="detailInfo" />
-      <detail-param-info :param-info="paramInfo" />
-      <detail-comment-info :comment-info="commentInfo" />
-      <detail-recommend-info />
-      <goods-list :goods='recommends' />
+      <detail-goods-info
+        :detail-info="detailInfo"
+        @detailImageLoad="detailImageLoad"
+      />
+      <detail-param-info ref="params" :param-info="paramInfo" />
+      <detail-comment-info ref="comment" :comment-info="commentInfo" />
+      <detail-recommend-info ref="recommend" />
+      <goods-list :goods="recommends"/>
     </scroll>
   </div>
 </template>
@@ -24,9 +27,10 @@ import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 import DetailRecommendInfo from "./childComps/DetailRecommendInfo";
-import GoodsList from 'components/content/goods/GoodsList.vue'
+import GoodsList from "components/content/goods/GoodsList.vue";
 
 import Scroll from "components/common/scroll/Scroll";
+import {debounce} from "common/utils"
 
 import {
   getDetail,
@@ -48,7 +52,7 @@ export default {
     DetailCommentInfo,
     DetailRecommendInfo,
     GoodsList,
-    Scroll
+    Scroll,
   },
   data() {
     return {
@@ -59,13 +63,19 @@ export default {
       detailInfo: {},
       paramInfo: {},
       commentInfo: {},
-      recommends:[]
+      recommends: [],
+      themeTopYs: [],
+      getThemeTopY:null
     };
   },
-  methods:{
+  methods: {
+    detailImageLoad() {
+      this.$refs.scroll.refresh();
+      this.getThemeTopY()
+    },
     titleClick(index) {
-      console.log(index);
-    }
+      this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 1000);
+    },
   },
   created() {
     // 1.$route 当前路由信息对象 保存 我们传入的 iid
@@ -102,8 +112,25 @@ export default {
     });
     // 3.请求推荐数据
     getRecommend().then((res) => {
-      this.recommends = res.data.list
+      this.recommends = res.data.list;
     });
+    this.getThemeTopY = debounce(()=>{
+      this.themeTopYs = []
+      this.themeTopYs.push(0);
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop-44);
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop-44);
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop-44);
+    },100)
+  },
+  mounted() {},
+  updated() {
+    // $el 指得是vue实例得根得 DOM 元素 在这里获取得的话 会获取多次  图片的高度也没有计算在内
+    //  this.themeTopYs = []
+    // this.themeTopYs.push(0)
+    // this.themeTopYs.push(this.$refs.params.$el.offsetTop)
+    // this.themeTopYs.push(this.$refs.comment.$el.offsetTop)
+    // this.themeTopYs.push(this.$refs.recommend.$el.offsetTop)
+    // console.log(this.themeTopYs);
   },
 };
 </script>
