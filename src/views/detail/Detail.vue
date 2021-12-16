@@ -1,7 +1,7 @@
 <template>
   <div id="detail">
-    <detail-nav-bar class="detail-nav" @titleClick="titleClick" />
-    <scroll class="content" ref="scroll">
+    <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav" />
+    <scroll class="content" ref="scroll" :probe-type='3' @scroll='contentScroll' :pull-up-load='true' >
       <!-- 在标签里面不区分大小写 写topImages 和 topimages 是一样的 所以由驼峰的花最好是以 top-images 这种方式写 -->
       <detail-swiper :top-images="topImages" />
       <detail-base-info :goods="goods" />
@@ -15,6 +15,7 @@
       <detail-recommend-info ref="recommend" />
       <goods-list :goods="recommends"/>
     </scroll>
+    <detail-bottom-bar />
   </div>
 </template>
 
@@ -27,9 +28,11 @@ import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 import DetailRecommendInfo from "./childComps/DetailRecommendInfo";
-import GoodsList from "components/content/goods/GoodsList.vue";
+import DetailBottomBar from "./childComps/DetailBottomBar.vue"
 
+import GoodsList from "components/content/goods/GoodsList.vue";
 import Scroll from "components/common/scroll/Scroll";
+
 import {debounce} from "common/utils"
 
 import {
@@ -51,8 +54,10 @@ export default {
     DetailParamInfo,
     DetailCommentInfo,
     DetailRecommendInfo,
+    DetailBottomBar,
     GoodsList,
     Scroll,
+    currentIndex:0
   },
   data() {
     return {
@@ -69,6 +74,33 @@ export default {
     };
   },
   methods: {
+    contentScroll(position) {
+      // 获取滚动的Y的值
+      const positionY = -position.y
+      
+      // positionY和主题中的值进行对比
+      for(let i in this.themeTopYs){
+        // 因为拿到的 i 时字符串类型 所以得转换一下
+        // i = parseInt(i)
+        i = i * 1
+        let length = this.themeTopYs.length
+        
+        // 普通做法
+        // if(this.currentIndex !==i && ((i < length-1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) ||
+        // (i === length-1 && positionY >=  this.themeTopYs[i]))){
+        //   this.currentIndex = i
+        //   this.$refs.nav.currentIndex = this.currentIndex
+        // }
+
+        // 高级做法 往 this.themeTopYs 里面多加一个最大值  这种做法会多占一点内存但是性能会好一点（空间 换 性能）
+        if(this.currentIndex !== i && ( positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1])){
+          this.currentIndex = i
+          this.$refs.nav.currentIndex = this.currentIndex
+        }
+
+      }
+
+    },
     detailImageLoad() {
       this.$refs.scroll.refresh();
       this.getThemeTopY()
@@ -120,6 +152,8 @@ export default {
       this.themeTopYs.push(this.$refs.params.$el.offsetTop-44);
       this.themeTopYs.push(this.$refs.comment.$el.offsetTop-44);
       this.themeTopYs.push(this.$refs.recommend.$el.offsetTop-44);
+      
+      this.themeTopYs.push(Number.MAX_VALUE)
     },100)
   },
   mounted() {},
@@ -148,6 +182,6 @@ export default {
   background-color: #fff;
 }
 .content {
-  height: calc(100% - 44px);
+  height: calc(100% - 58px);
 }
 </style>
