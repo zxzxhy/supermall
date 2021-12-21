@@ -1,7 +1,13 @@
 <template>
   <div id="detail">
     <detail-nav-bar class="detail-nav" @titleClick="titleClick" ref="nav" />
-    <scroll class="content" ref="scroll" :probe-type='3' @scroll='contentScroll' :pull-up-load='true' >
+    <scroll
+      class="content"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="contentScroll"
+      :pull-up-load="true"
+    >
       <!-- 在标签里面不区分大小写 写topImages 和 topimages 是一样的 所以由驼峰的花最好是以 top-images 这种方式写 -->
       <detail-swiper :top-images="topImages" />
       <detail-base-info :goods="goods" />
@@ -13,9 +19,10 @@
       <detail-param-info ref="params" :param-info="paramInfo" />
       <detail-comment-info ref="comment" :comment-info="commentInfo" />
       <detail-recommend-info ref="recommend" />
-      <goods-list :goods="recommends"/>
+      <goods-list :goods="recommends" />
     </scroll>
-    <detail-bottom-bar />
+    <back-top @click.native="backClick" v-show="isShowBackTop" />
+    <detail-bottom-bar @addCart="addToCart" />
   </div>
 </template>
 
@@ -28,12 +35,13 @@ import DetailGoodsInfo from "./childComps/DetailGoodsInfo";
 import DetailParamInfo from "./childComps/DetailParamInfo";
 import DetailCommentInfo from "./childComps/DetailCommentInfo";
 import DetailRecommendInfo from "./childComps/DetailRecommendInfo";
-import DetailBottomBar from "./childComps/DetailBottomBar.vue"
+import DetailBottomBar from "./childComps/DetailBottomBar.vue";
 
 import GoodsList from "components/content/goods/GoodsList.vue";
 import Scroll from "components/common/scroll/Scroll";
 
-import {debounce} from "common/utils"
+import { debounce } from "common/utils";
+import { backTopMixin } from "common/mixin";
 
 import {
   getDetail,
@@ -57,8 +65,9 @@ export default {
     DetailBottomBar,
     GoodsList,
     Scroll,
-    currentIndex:0
+    currentIndex: 0,
   },
+  mixins: [backTopMixin],
   data() {
     return {
       iid: null,
@@ -70,21 +79,21 @@ export default {
       commentInfo: {},
       recommends: [],
       themeTopYs: [],
-      getThemeTopY:null
+      getThemeTopY: null,
     };
   },
   methods: {
     contentScroll(position) {
       // 获取滚动的Y的值
-      const positionY = -position.y
-      
+      const positionY = -position.y;
+
       // positionY和主题中的值进行对比
-      for(let i in this.themeTopYs){
+      for (let i in this.themeTopYs) {
         // 因为拿到的 i 时字符串类型 所以得转换一下
         // i = parseInt(i)
-        i = i * 1
-        let length = this.themeTopYs.length
-        
+        i = i * 1;
+        let length = this.themeTopYs.length;
+
         // 普通做法
         // if(this.currentIndex !==i && ((i < length-1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) ||
         // (i === length-1 && positionY >=  this.themeTopYs[i]))){
@@ -93,20 +102,38 @@ export default {
         // }
 
         // 高级做法 往 this.themeTopYs 里面多加一个最大值  这种做法会多占一点内存但是性能会好一点（空间 换 性能）
-        if(this.currentIndex !== i && ( positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1])){
-          this.currentIndex = i
-          this.$refs.nav.currentIndex = this.currentIndex
+        if (
+          this.currentIndex !== i &&
+          positionY >= this.themeTopYs[i] &&
+          positionY < this.themeTopYs[i + 1]
+        ) {
+          this.currentIndex = i;
+          this.$refs.nav.currentIndex = this.currentIndex;
         }
-
       }
-
+      // 决定 BackTop 是否显示
+      this.listenShowBackTop(position);
     },
     detailImageLoad() {
       this.$refs.scroll.refresh();
-      this.getThemeTopY()
+      this.getThemeTopY();
     },
     titleClick(index) {
       this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 1000);
+    },
+    // 添加购物车
+    addToCart() {
+      // 1.获取购物车需要展示的信息
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+
+      // 2.将山商品加入到购物车
+      // this.$store.cartList.push(product)
+      this.$store.commit("addCart", product);
     },
   },
   created() {
@@ -146,15 +173,15 @@ export default {
     getRecommend().then((res) => {
       this.recommends = res.data.list;
     });
-    this.getThemeTopY = debounce(()=>{
-      this.themeTopYs = []
+    this.getThemeTopY = debounce(() => {
+      this.themeTopYs = [];
       this.themeTopYs.push(0);
-      this.themeTopYs.push(this.$refs.params.$el.offsetTop-44);
-      this.themeTopYs.push(this.$refs.comment.$el.offsetTop-44);
-      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop-44);
-      
-      this.themeTopYs.push(Number.MAX_VALUE)
-    },100)
+      this.themeTopYs.push(this.$refs.params.$el.offsetTop - 44);
+      this.themeTopYs.push(this.$refs.comment.$el.offsetTop - 44);
+      this.themeTopYs.push(this.$refs.recommend.$el.offsetTop - 44);
+
+      this.themeTopYs.push(Number.MAX_VALUE);
+    }, 100);
   },
   mounted() {},
   updated() {

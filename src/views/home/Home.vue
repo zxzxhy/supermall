@@ -46,10 +46,11 @@ import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 import GoodsList from "components/content/goods/GoodsList";
-import BackTop from "components/content/backTop/BackTop";
+
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import {debounce} from "common/utils"
+import { backTopMixin } from "common/mixin"
 
 export default {
   components: {
@@ -60,8 +61,8 @@ export default {
     GoodsList,
     RecommendView,
     FeatureView,
-    BackTop,
   },
+  mixins:[backTopMixin],
   data() {
     return {
       // result: null,
@@ -74,7 +75,6 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBackTop: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
@@ -146,7 +146,7 @@ export default {
     },
     contentScroll(position) {
       // 决定 BackTop 是否显示
-      this.isShowBackTop = -position.y > 1000;
+      this.listenShowBackTop(position)
       // 决定 tabControl 是否吸顶
       this.isTabFixed = -position.y > this.tabOffsetTop;
     },
@@ -181,14 +181,6 @@ export default {
         this.goods[type].page += 1;
         this.$refs.scroll.finishPullUp();
       });
-    },
-    // 回到顶部组件的点击
-    backClick() {
-      // this.$refs.scroll 拿到的是 scroll 组件对象 第三个参数是用多少时间回到顶部  scrollTo 这个是 better-scroll 的方法
-      // this.$refs.scroll.scroll.scrollTo(0,0,1000)
-
-      // 因为 scrollTo方法已经在 BackScroll封装好了 所以可以直接调用
-      this.$refs.scroll.scrollTo(0, 0, 1000);
     },
   },
 };
