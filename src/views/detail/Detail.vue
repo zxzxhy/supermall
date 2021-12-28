@@ -133,7 +133,8 @@ export default {
 
       // 2.将山商品加入到购物车
       // this.$store.cartList.push(product)
-      this.$store.commit("addCart", product);
+      // this.$store.commit("addCart", product);
+      this.$store.dispatch("addCart", product);
     },
   },
   created() {

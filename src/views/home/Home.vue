@@ -199,7 +199,7 @@ export default {
   right: 0; */
   z-index: 1000;
   color: #fff;
-  font-weight: bolder;
+  font-weight: 700;
   background-color: var(--color-tint);
 }
 .content {
