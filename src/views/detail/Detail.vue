@@ -42,6 +42,7 @@ import Scroll from "components/common/scroll/Scroll";
 
 import { debounce } from "common/utils";
 import { backTopMixin } from "common/mixin";
+import { mapActions } from "vuex";
 
 import {
   getDetail,
@@ -83,6 +84,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["addCart"]),
     contentScroll(position) {
       // 获取滚动的Y的值
       const positionY = -position.y;
@@ -134,7 +136,17 @@ export default {
       // 2.将山商品加入到购物车
       // this.$store.cartList.push(product)
       // this.$store.commit("addCart", product);
-      this.$store.dispatch("addCart", product);
+
+      // 调用了 store（根） 里面的 action.js 里的 addCart
+      // this.$store.dispatch("addCart", product).then(res=>{ // dispatch 调用  commit 提交
+      //   console.log(res);
+      // });
+
+      // 把 store（根）里面的 Action 的 addCart 通过  ...mapActions 混入后的写法
+      this.addCart(product).then((res) => {
+        this.$toast.show(res,1500)
+      });
+
     },
   },
   created() {
