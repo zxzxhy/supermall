@@ -5,7 +5,6 @@
         <div>xxx商城</div>
       </template></nav-bar
     >
-    <!-- <scroll> -->
     <user-info></user-info>
     <section class="account">
       <div class="account-item">
@@ -23,7 +22,6 @@
     </section>
     <list-view :list-data="orderList" class="order-list"></list-view>
     <list-view :list-data="serviceList" class="service-list"></list-view>
-    <!-- </scroll> -->
   </div>
 </template>
 
@@ -31,7 +29,6 @@
 import NavBar from "components/common/navbar/NavBar.vue";
 import UserInfo from "./childComps/UserInfo.vue";
 import ListView from "./childComps/ListView";
-// import Scroll from "../../components/common/scroll/Scroll.vue";
 
 export default {
   data() {
@@ -44,7 +41,6 @@ export default {
     NavBar,
     UserInfo,
     ListView,
-    // Scroll,
   },
 };
 </script>
