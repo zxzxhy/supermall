@@ -38,6 +38,7 @@
           </div>
         </scroll>
       </div>
+      <back-top @click.native="backClick" v-show="isShowBackTop" />
     </div>
   </div>
 </template>
@@ -46,11 +47,12 @@
 import NavBar from "components/common/navbar/NavBar.vue";
 import Scroll from "components/common/scroll/Scroll.vue";
 import TabControl from "components/content/tabControl/TabControl.vue";
+import BackTop from "../../components/content/backTop/BackTop.vue"
 
 import TabMenu from "./childComps/TabMenu.vue";
 import TabContentCategory from "./childComps/TabContentCategory.vue";
 
-import { tabControlMixin } from "../../common/mixin";
+import { tabControlMixin,backTopMixin } from "../../common/mixin";
 import { debounce } from "../../common/utils";
 
 import {
@@ -68,8 +70,9 @@ export default {
     Scroll,
     TabControl,
     TabContentDetail,
+    BackTop
   },
-  mixins: [tabControlMixin],
+  mixins: [tabControlMixin,backTopMixin],
   data() {
     return {
       currentIndex: -1,
@@ -100,7 +103,6 @@ export default {
     this.$bus.$on("itemImageLoad", this.itemImgListener);
   },
   activated() {
-    console.log("====");
     this.$refs.scroll.scrollTo(0, this.saveY, 1);
     this.$refs.scroll.refresh();
   },
@@ -168,6 +170,9 @@ export default {
       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
     contentScroll(position) {
+       // 决定 BackTop 是否显示
+      this.listenShowBackTop(position)
+      // 决定 tab-control 是否显示
       this.isTabFixed = -position.y > this.tabOffsetTop;
     },
     // 监听 tab-menu 点击

@@ -144,7 +144,7 @@ export default {
 
       // 把 store（根）里面的 Action 的 addCart 通过  ...mapActions 混入后的写法
       this.addCart(product).then((res) => {
-        this.$toast.show(res,1500)
+        this.$toast.show(res,1000)
       });
 
     },
