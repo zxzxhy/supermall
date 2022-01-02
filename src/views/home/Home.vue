@@ -50,7 +50,7 @@ import GoodsList from "components/content/goods/GoodsList";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
 import {debounce} from "common/utils"
-import { backTopMixin } from "common/mixin"
+import { backTopMixin,tabControlMixin } from "common/mixin"
 
 export default {
   components: {
@@ -62,7 +62,7 @@ export default {
     RecommendView,
     FeatureView,
   },
-  mixins:[backTopMixin],
+  mixins:[backTopMixin,tabControlMixin],
   data() {
     return {
       // result: null,
@@ -70,11 +70,11 @@ export default {
       recommends: [],
       titles: ["流行", "新款", "精选"],
       goods: {
-        pop: { page: 0, list: [] },
-        new: { page: 0, list: [] },
-        sell: { page: 0, list: [] },
+        'pop': { page: 0, list: [] },
+        'new': { page: 0, list: [] },
+        'sell': { page: 0, list: [] },
       },
-      currentType: "pop",
+      // currentType: "pop",
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
@@ -126,24 +126,24 @@ export default {
     /* 
       事件监听相关方法
     */
-    tabClick(index) {
-      // console.log(index);
-      switch (index) {
-        case 0:
-          this.currentType = "pop";
-          break;
-        case 1:
-          this.currentType = "new";
-          break;
-        case 2:
-          this.currentType = "sell";
-          break;
-      }
-      // 让两个 tabControl 的状态保持一致
-      this.$refs.tabControl1.currentIndex = index;
-      this.$refs.tabControl2.currentIndex = index;
-      this.$refs.scroll.scrollTo(0,-this.$refs.tabControl2.$el.offsetTop,1)
-    },
+    // tabClick(index) {
+    //   // console.log(index);
+    //   switch (index) {
+    //     case 0:
+    //       this.currentType = "pop";
+    //       break;
+    //     case 1:
+    //       this.currentType = "new";
+    //       break;
+    //     case 2:
+    //       this.currentType = "sell";
+    //       break;
+    //   }
+    //   // 让两个 tabControl 的状态保持一致
+    //   this.$refs.tabControl1.currentIndex = index;
+    //   this.$refs.tabControl2.currentIndex = index;
+    //   this.$refs.scroll.scrollTo(0,-this.$refs.tabControl2.$el.offsetTop,1)
+    // },
     contentScroll(position) {
       // 决定 BackTop 是否显示
       this.listenShowBackTop(position)
@@ -216,8 +216,8 @@ export default {
   margin-top: 44px;
   overflow: hidden;
 } */
-.tab-control {
+/* .tab-control {
   position: relative;
   z-index: 9;
-}
+} */
 </style>

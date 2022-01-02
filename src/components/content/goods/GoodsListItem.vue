@@ -1,8 +1,8 @@
 <template>
   <div class="goods-item" @click="itemClick">
     <!-- 事件总线方法解决 滚区域的bug -->
-    <img v-lazy='showImage' alt="" @load="imageLoad" />
-    <!-- <img :src='showImage' alt="" @load="imageLoad" /> -->
+    <!-- <img v-lazy='showImage' alt="" @load="imageLoad" /> -->
+    <img :src='showImage' alt="" @load="imageLoad" />
     <!-- <img :src="showImage" alt="" /> -->
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
@@ -16,7 +16,7 @@
 export default {
   computed:{
     showImage() {
-      return this.goodsItem.image || this.goodsItem.show.img
+      return this.goodsItem.img || this.goodsItem.image || this.goodsItem.show.img
     }
   },
   methods:{

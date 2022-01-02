@@ -42,7 +42,7 @@ export default {
       // 开启对 wrapper 子元素中图片元素的加载的探测。无论图片的加载成功与否，都会自动调用 BetterScroll 的 refresh 方法来重新计算可滚动的宽度或者高度 都可以去官方网站查看  开启插件 如果没有需要 NPM 一  不加的话下拉之后需要等一会才能往下拉
       // observeImage: true,
       // 如果向鼠标滚轮在这个插件里面能用就得添加这个
-      mouseWheel: true,
+      // mouseWheel: true,
     });
     // 监听滚动位置
     this.scroll.on("scroll", (position) => {

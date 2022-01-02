@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import VueLazyload from 'vue-lazyload'
+// import VueLazyload from 'vue-lazyload'
 import Fastclick from 'fastclick'
 
 
@@ -13,7 +13,7 @@ Vue.config.productionTip = false
 Vue.prototype.$bus = new Vue()
 
 // 使用懒加载插件
-Vue.use(VueLazyload)
+// Vue.use(VueLazyload)
 
 // 安装 toast 插件   https://github.com/hilongjw/vue-lazyload
 Vue.use(toast)

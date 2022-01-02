@@ -31,6 +31,7 @@ export default {
   methods: {
     itemClick(index) {
       this.currentIndex = index;
+      this.$emit('selectItem',index)
     },
   },
 };
@@ -42,6 +43,9 @@ export default {
   height: calc(100vh - 49px - 44px);
   background-color: #f6f6f6;
   box-sizing: border-box;
+}
+.menu-list {
+  width: 100%;
 }
 .menu-list-item {
   height: 45px;
