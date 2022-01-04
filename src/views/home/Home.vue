@@ -85,12 +85,12 @@ export default {
   created() {
     // 发送网络请求
     // 1.请求多个数据
-    this.getHomeMultidata();
+    this.getMultidata();
 
     // 请求商品数据
-    this.getHomeGoods("pop");
-    this.getHomeGoods("new");
-    this.getHomeGoods("sell");
+    this.getGoods("pop");
+    this.getGoods("new");
+    this.getGoods("sell");
   },
   mounted() {
     // 使用防抖动函数 图片加载完成得事件监听
@@ -166,7 +166,7 @@ export default {
     /* 
       网络请求相关方法
     */
-    getHomeMultidata() {
+    getMultidata() {
       getHomeMultidata().then((res) => {
         // this.result = res;
         //  console.log(res);
@@ -174,7 +174,7 @@ export default {
         this.recommends = res.data.recommend.list;
       });
     },
-    getHomeGoods(type) {
+    getGoods(type) {
       const page = this.goods[type].page + 1;
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
