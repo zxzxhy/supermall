@@ -153,7 +153,7 @@ export default {
     // 上拉加载更多
     loadMore() {
       // console.log('上拉加载更多');
-      this.getHomeGoods(this.currentType);
+      this.getGoods(this.currentType);
       // 除了在 Scroll 组件 scroll里面添加 observeImage:true 之外可以在这例设置 当图片加载完之后刷新一下就可以正常滑动了
       // this.$refs.scroll.refresh()
     },
