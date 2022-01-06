@@ -165,6 +165,7 @@ export default {
         data.columns,
         data.shopInfo.services
       );
+
       // 2.3 获取店铺信息
       this.shop = new Shop(data.shopInfo);
       // console.log(this.shop);

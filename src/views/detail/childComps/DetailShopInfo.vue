@@ -81,7 +81,8 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.shop-top .title {
+.shop-top,
+.title {
   margin-left: 10px;
   vertical-align: center;
 }
