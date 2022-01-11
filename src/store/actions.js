@@ -11,9 +11,8 @@ export default {
       // }
 
       // 查找之前的数组里面是否有该商品 这样子作比较好
-      let oldProduct = context.state.cartList.find(item => {
-        return item.iid === payload.iid
-      })
+      let oldProduct = context.state.cartList.find(item => item.iid === payload.iid
+      )
 
       // 判断 oldProduct 是否有值 有就给他加1 没有就push进去
       if (oldProduct) {

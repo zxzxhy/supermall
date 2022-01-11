@@ -6,9 +6,7 @@
       </template>
     </nav-bar>
     <div class="content">
-      <div class="tab-menu">
         <tab-menu :categories="categories" @selectItem="selectItem" />
-      </div>
       <div class="tab-width">
         <tab-control
           :titles="Categotytitles"

@@ -1,5 +1,5 @@
 <template>
-  <scroll class="tab-menu ">
+  <scroll class="tab-menu">
     <div class="menu-list">
       <div
         class="menu-list-item"
@@ -39,13 +39,12 @@ export default {
 
 <style>
 .tab-menu {
-  width: 100px;
   height: calc(100vh - 49px - 44px);
   background-color: #f6f6f6;
   box-sizing: border-box;
 }
 .menu-list {
-  width: 100%;
+  width: 100px;
 }
 .menu-list-item {
   height: 45px;

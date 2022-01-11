@@ -22,7 +22,7 @@
       <goods-list :goods="recommends" />
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop" />
-    <detail-bottom-bar @addCart="addToCart" />
+    <detail-bottom-bar @addToCart="addToCart" />
   </div>
 </template>
 
@@ -66,7 +66,6 @@ export default {
     DetailBottomBar,
     GoodsList,
     Scroll,
-    currentIndex: 0,
   },
   mixins: [backTopMixin],
   data() {
@@ -81,6 +80,7 @@ export default {
       recommends: [],
       themeTopYs: [],
       getThemeTopY: null,
+      currentIndex: 0,
     };
   },
   methods: {
@@ -88,13 +88,13 @@ export default {
     contentScroll(position) {
       // 获取滚动的Y的值
       const positionY = -position.y;
-
+      let length = this.themeTopYs.length;
       // positionY和主题中的值进行对比
-      for (let i in this.themeTopYs) {
+      // for (let i in this.themeTopYs) {
+      for (let i = 0; i < length; i++) {
         // 因为拿到的 i 时字符串类型 所以得转换一下
         // i = parseInt(i)
         i = i * 1;
-        let length = this.themeTopYs.length;
 
         // 普通做法
         // if(this.currentIndex !==i && ((i < length-1 && positionY >= this.themeTopYs[i] && positionY < this.themeTopYs[i+1]) ||
@@ -144,9 +144,8 @@ export default {
 
       // 把 store（根）里面的 Action 的 addCart 通过  ...mapActions 混入后的写法
       this.addCart(product).then((res) => {
-        this.$toast.show(res,1000)
+        this.$toast.show(res, 1000);
       });
-
     },
   },
   created() {

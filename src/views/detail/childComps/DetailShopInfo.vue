@@ -99,6 +99,7 @@ export default {
 
 .shop-middle-left {
   display: flex;
+  /* 均匀排列每个元素每个元素之间的间隔相等 */
   justify-content: space-evenly;
   color: #333;
   text-align: center;
