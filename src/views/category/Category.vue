@@ -6,7 +6,7 @@
       </template>
     </nav-bar>
     <div class="content">
-        <tab-menu :categories="categories" @selectItem="selectItem" />
+      <tab-menu :categories="categories" @selectItem="selectItem" />
       <div class="tab-width">
         <tab-control
           :titles="Categotytitles"
@@ -45,13 +45,13 @@
 import NavBar from "components/common/navbar/NavBar.vue";
 import Scroll from "components/common/scroll/Scroll.vue";
 import TabControl from "components/content/tabControl/TabControl.vue";
-import BackTop from "../../components/content/backTop/BackTop.vue"
+import BackTop from "components/content/backTop/BackTop.vue";
 
 import TabMenu from "./childComps/TabMenu.vue";
 import TabContentCategory from "./childComps/TabContentCategory.vue";
 
-import { tabControlMixin,backTopMixin } from "../../common/mixin";
-import { debounce } from "../../common/utils";
+import { tabControlMixin, backTopMixin } from "common/mixin";
+import { debounce } from "common/utils";
 
 import {
   getCategory,
@@ -68,9 +68,9 @@ export default {
     Scroll,
     TabControl,
     TabContentDetail,
-    BackTop
+    BackTop,
   },
-  mixins: [tabControlMixin,backTopMixin],
+  mixins: [tabControlMixin, backTopMixin],
   data() {
     return {
       currentIndex: -1,
@@ -89,7 +89,7 @@ export default {
   },
   watch: {
     categoryData: function () {
-       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
   },
   mounted() {
@@ -117,7 +117,9 @@ export default {
     },
     showCategoryDetail() {
       if (this.currentIndex === -1) return [];
-      return this.categoryData[this.currentIndex].categoryDetail[this.currentType];
+      return this.categoryData[this.currentIndex].categoryDetail[
+        this.currentType
+      ];
     },
   },
   methods: {
@@ -168,8 +170,8 @@ export default {
       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
     },
     contentScroll(position) {
-       // 决定 BackTop 是否显示
-      this.listenShowBackTop(position)
+      // 决定 BackTop 是否显示
+      this.listenShowBackTop(position);
       // 决定 tab-control 是否显示
       this.isTabFixed = -position.y > this.tabOffsetTop;
     },
@@ -204,7 +206,6 @@ export default {
   left: 100px;
   height: calc(100vh - 49px);
   flex: 1;
-  width: calc(100% - 100px);
 }
 .tab-width {
   width: 100%;

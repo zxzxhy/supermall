@@ -39,7 +39,7 @@ export class GoodsParam {
     // 有些是由图片的，有些是没有图片的
     this.image = info.images ? info.images[0] : '';
     this.infos = info.set;
-    this.sizes = rule.tables
+    this.sizes = rule ? rule.tables : '';
   }
 }
 export function getRecommend() {
