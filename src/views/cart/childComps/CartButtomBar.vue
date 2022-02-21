@@ -9,7 +9,9 @@
       <span>全选</span>
     </div>
     <div class="totalPrice">合计：{{ totalPrice }}</div>
-    <div class="calculate">结算({{ checkLength }})</div>
+    <div class="calculate" @click="delClick">
+      {{ btnIsFixed ? "删除" : "结算" }}({{ checkLength }})
+    </div>
   </div>
 </template>
 
@@ -18,6 +20,12 @@ import CheckButton from "components/content/checkButton/CheckButton.vue";
 import { mapGetters } from "vuex";
 export default {
   components: { CheckButton },
+  props: {
+    btnIsFixed: {
+      type: Boolean,
+      default: false,
+    },
+  },
   computed: {
     // 加入了这个之后就不用 写完整的this.$store.getters.cartList  直接写 this.cartList 就可以了
     // 将 cartList 混入到 计算属性中
@@ -52,6 +60,12 @@ export default {
     },
   },
   methods: {
+    delClick() {
+      if (this.btnIsFixed && this.isSelectAll) {
+        console.log("删除");
+        //  this.cartList = this.cartList.forEach((item) => (item.checked = false))
+      }
+    },
     checkClick() {
       if (this.isSelectAll) {
         // 全部选中的状态下

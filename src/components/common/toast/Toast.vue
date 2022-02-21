@@ -1,5 +1,5 @@
 <template>
-  <div class="toast" v-show="isShow">{{ message }}</div>
+    <div class="toast" v-show="isShow">{{ message }}</div>
 </template>
 
 <script>
@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     // es6 添加默认参数
-    show(message='商品成功添加', duration=2000) {
+    show(message = "商品成功添加", duration = 2000) {
       // 给 duration 添加默认参数
       // duration = duration || 2000
 
@@ -37,7 +37,7 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 1);
   text-align: center;
   border-radius: 8px;
   line-height: 24px;

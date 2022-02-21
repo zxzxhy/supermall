@@ -2,7 +2,10 @@
   <!-- 得再包一层才能滚动 -->
   <div id="shop-item">
     <div class="item-selector">
-      <check-button :is-checked='product.checked' @click.native='checkClick'></check-button>
+      <check-button
+        :is-checked="product.checked"
+        @click.native="checkClick"
+      ></check-button>
     </div>
     <div class="item-img">
       <img :src="product.image" alt="商品图片" />
@@ -26,6 +29,9 @@ export default {
   components: {
     CheckButton,
   },
+  mounted(){
+    this.$bus.$on('managementClick')
+  },
   props: {
     product: {
       type: Object,
@@ -34,11 +40,14 @@ export default {
       },
     },
   },
-  methods:{
+  methods: {
     checkClick() {
-      this.product.checked = !this.product.checked
+      this.product.checked = !this.product.checked;
+    },
+    managementClick(){
+      
     }
-  }
+  },
 };
 </script>
 
@@ -88,6 +97,7 @@ export default {
 }
 .item-bottom {
   margin-top: 10px;
+  margin-right: 10px;
   position: absolute;
   bottom: 10px;
   left: 10px;

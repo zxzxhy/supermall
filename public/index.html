@@ -2,12 +2,17 @@
 <html lang="">
   <head>
     <meta charset="utf-8">
+    <!-- 针对IE 的一个特殊的配置 让IE以最高的渲染级别渲染页面 -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 开启移动端的理想视口 -->
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- 配置页签的图标  BASE_URL 值得是public 目录下下  -->
     <link rel="icon" href="<%= BASE_URL %>logo.png">
+    <!-- 配置网页的标题   -->
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
+    <!-- 如果浏览器不支持JS 17行就会出现在浏览器的页面上  -->
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>

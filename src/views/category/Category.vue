@@ -21,19 +21,20 @@
           :pull-up-load="true"
           @scroll="contentScroll"
         >
-          <div>
-            <tab-content-category
-              :subcategories="showSubcategory"
-              @CategoryImageLoad="CategoryImageLoad"
-              ref="scroll"
-            />
-            <tab-control
-              :titles="Categotytitles"
-              @tabClick="tabClick"
-              ref="tabControl2"
-            />
-            <tab-content-detail :category-detail="showCategoryDetail" />
-          </div>
+          <!-- <div> -->
+          <tab-content-category
+            :subcategories="showSubcategory"
+            @CategoryImageLoad="CategoryImageLoad"
+            ref="scroll"
+          />
+          <tab-control
+            :titles="Categotytitles"
+            @tabClick="tabClick"
+            ref="tabControl2"
+            v-show="isTabFixed2"
+          />
+          <tab-content-detail :category-detail="showCategoryDetail" />
+          <!-- </div> -->
         </scroll>
       </div>
       <back-top @click.native="backClick" v-show="isShowBackTop" />
@@ -80,6 +81,7 @@ export default {
       itemImgListener: null,
       saveY: 0,
       isTabFixed: false,
+      isTabFixed2: false,
       tabOffsetTop: 0,
     };
   },
@@ -90,6 +92,7 @@ export default {
   watch: {
     categoryData: function () {
       this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+      this.isTabFixed2 = true
     },
   },
   mounted() {
@@ -177,6 +180,7 @@ export default {
     },
     // 监听 tab-menu 点击
     selectItem(index) {
+      this.isTabFixed2 = false
       this.$refs.scroll.scrollTo(0, 0, 1);
       this.getSubcategoryInfo(index);
     },
