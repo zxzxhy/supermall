@@ -57,7 +57,10 @@ const router = new VueRouter({
 })
 
 export default router
-router.beforeEach((to, from, next) => {
+// router.beforeEach((to, from, next) => {
+//   document.title = to.matched[0].meta.title
+//   next()
+// })
+router.afterEach((to, from) => {
   document.title = to.matched[0].meta.title
-  next()
 })
